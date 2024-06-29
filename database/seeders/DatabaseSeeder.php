@@ -17,6 +17,8 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             TipoEnderecoSeeder::class,
             SerieSeeder::class,
+            AlunoSeeder::class,
+            TurmaSeeder::class,
         ]);
     }
 }
