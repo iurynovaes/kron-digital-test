@@ -23,3 +23,7 @@ Senha: 123
 Perfil: Cadastro
 E-mail: cadastro@test.com
 Senha: 123
+
+## Pacotes
+
+Inseri um pacote para manipulação de Datatables: yajra/laravel-datatables

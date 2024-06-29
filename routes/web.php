@@ -17,6 +17,9 @@ Route::middleware(['auth'])->group(function () {
     // DASHBOARD
 
     Route::get('/', [AdminController::class, 'index'])->name('home');
+
+    // RELATÓRIOS
+
     Route::get('/relatorios', [AdminController::class, 'reports'])->name('reports.index');
     Route::post('/relatorio', [AdminController::class, 'report'])->name('reports.post');
 
@@ -26,11 +29,14 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/alunos-paginados', [AlunoController::class, 'alunosDatatable'])->name('alunos.datatable');
     Route::get('/get-alunos', [AlunoController::class, 'getAlunos'])->name('alunos.ajax');
     
+    // TURMAS
     
     Route::resource('turmas', TurmaController::class);
     Route::get('/alunos-paginadas', [TurmaController::class, 'turmasDatatable'])->name('turmas.datatable');
     Route::get('/get-turmas', [TurmaController::class, 'getTurmas'])->name('turmas.ajax');
     
+    // MATRÍCULAS
+
     Route::get('/matriculas', [MatriculaController::class, 'index'])->name('matriculas.index');
     Route::post('/matricular-aluno', [MatriculaController::class, 'matricularAluno'])->name('matriculas.create');
     Route::delete('/remover-matricula', [MatriculaController::class, 'removerMatricula'])->name('matriculas.delete');

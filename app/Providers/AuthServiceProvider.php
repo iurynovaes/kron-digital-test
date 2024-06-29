@@ -47,7 +47,7 @@ class AuthServiceProvider extends ServiceProvider
             return (new TurmaPolicy)->delete($user);
         });
 
-        // DASHBOARD
+        // SECRETARIA
 
         Gate::define('view-secretaria', function (User $user) {
             return $user->role == UserRole::Secretaria->value;

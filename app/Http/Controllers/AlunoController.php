@@ -4,12 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Aluno;
-use App\Models\Endereco;
 use App\Models\Serie;
 use App\Models\TipoEndereco;
-use App\Services\CreateEnderecoAlunoService;
 use App\Services\EnderecoAlunoService;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 use Throwable;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -211,6 +210,13 @@ class AlunoController extends Controller
 
     public function destroy(Aluno $aluno)
     {
+        if (! Gate::allows('delete-aluno')) {
+            return redirect()->route('home')->with('alert_bag', [
+                'success' => false,
+                'message' => 'Acesso negado! Você não tem permissão para acessar este recurso.'
+            ]);
+        }
+
         $aluno->delete();
 
         return redirect()->route('alunos.index')->with('alert_bag', [

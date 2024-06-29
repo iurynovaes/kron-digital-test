@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\Turno;
 use App\Models\Aluno;
 use App\Models\AlunoTurma;
 use App\Models\Serie;
@@ -10,12 +9,20 @@ use App\Models\Turma;
 use Exception;
 use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Throwable;
 
 class MatriculaController extends Controller
 {
     public function index()
     {
+        if (! Gate::allows('view-secretaria')) {
+            return redirect()->route('home')->with('alert_bag', [
+                'success' => false,
+                'message' => 'Acesso negado! Você não tem permissão para acessar este recurso.'
+            ]);
+        }
+
         $series = Serie::pluck('nome', 'id')->toArray();
 
         return view('matriculas.create', compact('series'));
@@ -23,6 +30,13 @@ class MatriculaController extends Controller
 
     public function matricularAluno(Request $request)
     {
+        if (! Gate::allows('view-secretaria')) {
+            return redirect()->route('home')->with('alert_bag', [
+                'success' => false,
+                'message' => 'Acesso negado! Você não tem permissão para acessar este recurso.'
+            ]);
+        }
+
         try {
 
             $request->validate([
@@ -72,6 +86,13 @@ class MatriculaController extends Controller
 
     public function removerMatricula(Request $request)
     {
+        if (! Gate::allows('view-secretaria')) {
+            return redirect()->route('home')->with('alert_bag', [
+                'success' => false,
+                'message' => 'Acesso negado! Você não tem permissão para acessar este recurso.'
+            ]);
+        }
+        
         try {
 
             $request->validate([

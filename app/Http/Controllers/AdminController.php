@@ -8,6 +8,7 @@ use App\Models\Serie;
 use App\Models\Turma;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 
 class AdminController extends Controller
 {
@@ -23,6 +24,13 @@ class AdminController extends Controller
     
     public function reports()
     {
+        if (! Gate::allows('view-relatorio')) {
+            return redirect()->route('home')->with('alert_bag', [
+                'success' => false,
+                'message' => 'Acesso negado! Você não tem permissão para acessar este recurso.'
+            ]);
+        }
+
         $reports = [
             'alunos_serie' => 'Total de alunos cadastrados por série, segmento',
             'alunos_turma' => 'Total de alunos matriculados por turma',
@@ -34,6 +42,13 @@ class AdminController extends Controller
     
     public function report(Request $request)
     {
+        if (! Gate::allows('view-relatorio')) {
+            return redirect()->route('home')->with('alert_bag', [
+                'success' => false,
+                'message' => 'Acesso negado! Você não tem permissão para acessar este recurso.'
+            ]);
+        }
+        
         $report = trim($request->input('report'));
         $nome_pai_mae = mb_strtoupper(trim($request->input('nome_pai_mae') ?? ''));
 

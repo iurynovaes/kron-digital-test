@@ -13,7 +13,6 @@
     <hr class="sidebar-divider my-0">
 
     <!-- Nav Item - Dashboard -->
-    @can('view-secretaria')
     <li class="nav-item active">
         <a class="nav-link" href="{{route('home')}}">
             <i class="fas fa-fw fa-tachometer-alt"></i>
@@ -22,7 +21,6 @@
 
     <!-- Divider -->
     <hr class="sidebar-divider">
-    @endcan
 
     <!-- Heading -->
     <div class="sidebar-heading">

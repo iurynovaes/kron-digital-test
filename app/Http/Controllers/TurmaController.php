@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Turma;
 use App\Models\Serie;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 use Throwable;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -14,11 +15,25 @@ class TurmaController extends Controller
 {
     public function index()
     {
+        if (! Gate::allows('view-turma')) {
+            return redirect()->route('home')->with('alert_bag', [
+                'success' => false,
+                'message' => 'Acesso negado! Você não tem permissão para acessar este recurso.'
+            ]);
+        }
+
         return view('turmas.index');
     }
 
     public function turmasDatatable(Request $request)
     {
+        if (! Gate::allows('view-turma')) {
+            return redirect()->route('home')->with('alert_bag', [
+                'success' => false,
+                'message' => 'Acesso negado! Você não tem permissão para acessar este recurso.'
+            ]);
+        }
+
         $turmas = Turma::with('serie')->select('turmas.*', DB::raw('UPPER(turmas.turno) as turno'));
 
         return DataTables::of($turmas)
@@ -49,6 +64,13 @@ class TurmaController extends Controller
 
     public function create()
     {
+        if (! Gate::allows('create-turma')) {
+            return redirect()->route('home')->with('alert_bag', [
+                'success' => false,
+                'message' => 'Acesso negado! Você não tem permissão para acessar este recurso.'
+            ]);
+        }
+
         $series = Serie::pluck('nome', 'id')->toArray();
         $turnos = Turno::toArray();
 
@@ -57,6 +79,13 @@ class TurmaController extends Controller
 
     public function store(Request $request)
     {
+        if (! Gate::allows('create-turma')) {
+            return redirect()->route('home')->with('alert_bag', [
+                'success' => false,
+                'message' => 'Acesso negado! Você não tem permissão para acessar este recurso.'
+            ]);
+        }
+
         $validate = $this->getValidateData();
 
         $request->validate($validate['rules'], $validate['messages']);
@@ -116,6 +145,13 @@ class TurmaController extends Controller
     
     public function edit(Turma $turma)
     {
+        if (! Gate::allows('update-turma')) {
+            return redirect()->route('home')->with('alert_bag', [
+                'success' => false,
+                'message' => 'Acesso negado! Você não tem permissão para acessar este recurso.'
+            ]);
+        }
+
         $series = Serie::pluck('nome', 'id')->toArray();
         $turnos = Turno::toArray();
 
@@ -124,6 +160,13 @@ class TurmaController extends Controller
 
     public function update(Turma $turma, Request $request)
     {
+        if (! Gate::allows('update-turma')) {
+            return redirect()->route('home')->with('alert_bag', [
+                'success' => false,
+                'message' => 'Acesso negado! Você não tem permissão para acessar este recurso.'
+            ]);
+        }
+
         $validate = $this->getValidateData();
 
         $request->validate($validate['rules'], $validate['messages']);
@@ -150,6 +193,13 @@ class TurmaController extends Controller
 
     public function destroy(Turma $turma)
     {
+        if (! Gate::allows('delete-turma')) {
+            return redirect()->route('home')->with('alert_bag', [
+                'success' => false,
+                'message' => 'Acesso negado! Você não tem permissão para acessar este recurso.'
+            ]);
+        }
+
         $turma->delete();
 
         return redirect()->route('turmas.index')->with('alert_bag', [
