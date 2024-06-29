@@ -51,25 +51,32 @@
 
     function drag(ev) {
         ev.dataTransfer.setData("text", ev.target.id);
-        if ($(ev.target).hasClass('aluno-turma')) {
-            $('#trash-box').removeClass('d-none');
-        }
     }
 
     function drop(ev) {
         ev.preventDefault();
         var data = ev.dataTransfer.getData("text");
         let el = document.getElementById(data);
+        let targetId = $(ev.target).attr('id');
+        let target = document.getElementById(targetId);
+
+        // Se soltar em cima de um item da lista, ele transfere o target para o UL
+        if(target.tagName == 'LI') {
+            target = document.getElementById(targetId).parentNode;
+        } else {
+            target = document.getElementById(targetId);
+        }
 
         let clone = document.getElementById(data).cloneNode();
-        clone.innerHTML = el.innerHTML;
+        clone.innerHTML = el.innerHTML + '<span class="badge badge-danger badge-pill" onclick="removerAlunoTurma(this.parentNode);" style="cursor:pointer"><i class="fa fa-sm fa-trash p-2"></i></span>';
 
         $(clone).attr('id', 'aluno-turma-' + $(el).data('aluno-id'));
-        $(clone).addClass('aluno-turma');
+        $(clone).addClass('aluno-turma d-flex justify-content-between align-items-center');
 
         alunoId = $(clone).data('aluno-id')
-        ev.target.appendChild(clone);
-        turmaId = $(ev.target).data('turma-id')
+        target.appendChild(clone);
+        turmaId = $(target).data('turma-id');
+        $(clone).data('turma-id', turmaId);
 
         $.ajax({
             url: '{{route('matriculas.create')}}',
@@ -84,12 +91,12 @@
                     alert('TUDO CERTO: ' + response.message);
                 } else {
                     alert('ATENÇÃO: ' + response.message);
-                    ev.target.removeChild(ev.target.lastElementChild);
+                    target.removeChild(target.lastElementChild);
                 }
             },
             error: function(xhr, status, error) {
                 alert('ERRO: ' + error);
-                ev.target.removeChild(ev.target.lastElementChild);
+                target.removeChild(target.lastElementChild);
             }
         });
     }
@@ -154,9 +161,9 @@
                     $.each(turmas, function(index, turma) {
                         let alunosLi = '';
                         for (a of turma.alunos) {
-                            alunosLi += '<li class="list-group-item aluno-turma d-flex justify-content-between align-items-center" id="aluno-turma-' + a.id + '" data-aluno-id="' + a.id + '" data-turma-id="' + turma.id + '" draggable="true" ondragstart="drag(event)">' + a.nome_completo + '<span class="badge badge-danger badge-pill" onclick="removerAlunoTurma(this.parentNode);" style="cursor:pointer"><i class="fa fa-sm fa-trash p-2"></i></span></li>';
+                            alunosLi += '<li class="list-group-item aluno-turma d-flex justify-content-between align-items-center" id="aluno-' + a.id + '-turma-' + turma.id + '" data-aluno-id="' + a.id + '" data-turma-id="' + turma.id + '" draggable="true" ondragstart="drag(event)">' + a.nome_completo + '<span class="badge badge-danger badge-pill" onclick="removerAlunoTurma(this.parentNode);" style="cursor:pointer"><i class="fa fa-sm fa-trash p-2"></i></span></li>';
                         }
-                        $('#turmas-boxes').append('<div class="col-md-4 text-center"><h6>'+turma.nome+' ('+String(turma.turno).toUpperCase()+')</h6><ul id="turma-'+turma.id+'" class="turma-box p-0" data-turma-id="'+turma.id+'" ondrop="drop(event)" ondragover="allowDrop(event)">'+alunosLi+'</ul></div>');
+                        $('#turmas-boxes').append('<div class="col-md-4 text-center"><h6>'+turma.nome+' ('+String(turma.turno).toUpperCase()+')</h6><b>Máx. vagas: '+turma.vagas+'</b><ul id="turma-'+turma.id+'" class="turma-box p-0" data-turma-id="'+turma.id+'" ondrop="drop(event)" ondragover="allowDrop(event)">'+alunosLi+'</ul></div>');
                     });
                 },
                 error: function(xhr, status, error) {
