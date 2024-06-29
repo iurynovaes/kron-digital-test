@@ -25,7 +25,7 @@ class TurmaSeeder extends Seeder
         foreach (range(1, 50) as $index) {
             Turma::create([
                 'nome' => 'Turma ' . $index,
-                'vagas' => $faker->randomNumber(),
+                'vagas' => $faker->randomNumber(1),
                 'ano_letivo' => $faker->date('Y'),
                 'serie_id' => $faker->randomElement($series)->id,
                 'turno' => $faker->randomElement($turnos),

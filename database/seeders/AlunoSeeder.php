@@ -42,7 +42,7 @@ class AlunoSeeder extends Seeder
                 'aluno_id' => $aluno->id,
                 'endereco_id' => $endereco->id,
                 'tipo_endereco_id' => $faker->randomElement($tipoEnderecos)->id,
-                'numero' => $faker->randomNumber(),
+                'numero' => $faker->randomNumber(3),
                 'complemento' => $faker->text(7),
             ]);
         }
